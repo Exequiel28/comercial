@@ -3,7 +3,7 @@
 # Etapa Base para PHP
 FROM ubuntu:22.04 as base
 
-ARG PHP_VERSION=8.3
+ARG PHP_VERSION=8.4
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
