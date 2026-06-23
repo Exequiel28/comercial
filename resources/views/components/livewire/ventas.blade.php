@@ -69,46 +69,46 @@
                     </div>
 
                     <div class="border border-gray-200 rounded-xl p-3 bg-gray-50/50">
-    <p class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2 border-b pb-1 flex justify-between items-center">
-        <span>📦 Artículos a vender</span>
-        <span class="bg-gray-200 text-gray-700 font-bold px-1.5 py-0.5 rounded text-[9px]">{{ count($carrito) }} ítems</span>
-    </p>
+                        <p class="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-2 border-b pb-1 flex justify-between items-center">
+                            <span>📦 Artículos a vender</span>
+                            <span class="bg-gray-200 text-gray-700 font-bold px-1.5 py-0.5 rounded text-[9px]">{{ count($carrito) }} ítems</span>
+                        </p>
 
-    @if(count($carrito) === 0)
-        <p class="text-xs text-gray-400 italic text-center py-4">El carrito está vacío. Utiliza el buscador de arriba.</p>
-    @else
-        <div class="space-y-2 max-h-64 overflow-y-auto pr-1">
-            @foreach($carrito as $index => $item)
-                <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm text-xs space-y-2">
-                    <div class="flex justify-between items-start">
-                        <p class="font-bold text-gray-900 truncate max-w-[180px]">{{ $item['descripcion'] }}</p>
-                        <button type="button" wire:click="removerDelCarrito({{ $index }})" class="text-red-500 hover:text-red-700 font-bold text-sm cursor-pointer">
-                            🗑️
-                        </button>
-                    </div>
-                    
-                    <div class="grid grid-cols-2 gap-2 pt-1 border-t border-gray-100">
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-0.5">Precio Unit. ($)</label>
-                            <input type="number" step="0.01" wire:model.live="carrito.{{ $index }}.precio" 
-                                class="w-full text-left rounded-md border-gray-300 bg-white text-gray-900 p-1 font-black focus:ring-indigo-500 focus:border-indigo-500 h-8 text-xs">
-                        </div>
-                        <div>
-                            <label class="block text-[10px] font-bold text-gray-500 uppercase mb-0.5">Cantidad</label>
-                            <input type="number" wire:model.live="carrito.{{ $index }}.cantidad" min="1" 
-                                class="w-full text-center rounded-md border-gray-300 bg-gray-50 text-gray-900 p-1 font-bold focus:ring-indigo-500 focus:border-indigo-500 h-8 text-xs">
-                        </div>
-                    </div>
+                        @if(count($carrito) === 0)
+                            <p class="text-xs text-gray-400 italic text-center py-4">El carrito está vacío. Utiliza el buscador de arriba.</p>
+                        @else
+                            <div class="space-y-2 max-h-64 overflow-y-auto pr-1">
+                                @foreach($carrito as $index => $item)
+                                    <div class="bg-white p-3 rounded-lg border border-gray-200 shadow-sm text-xs space-y-2">
+                                        <div class="flex justify-between items-start">
+                                            <p class="font-bold text-gray-900 truncate max-w-[180px]">{{ $item['descripcion'] }}</p>
+                                            <button type="button" wire:click="removerDelCarrito({{ $index }})" class="text-red-500 hover:text-red-700 font-bold text-sm cursor-pointer">
+                                                🗑️
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-2 gap-2 pt-1 border-t border-gray-100">
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-0.5">Precio Unit. ($)</label>
+                                                <input type="number" step="0.01" wire:model.live="carrito.{{ $index }}.precio" 
+                                                    class="w-full text-left rounded-md border-gray-300 bg-white text-gray-900 p-1 font-black focus:ring-indigo-500 focus:border-indigo-500 h-8 text-xs">
+                                            </div>
+                                            <div>
+                                                <label class="block text-[10px] font-bold text-gray-500 uppercase mb-0.5">Cantidad</label>
+                                                <input type="number" wire:model.live="carrito.{{ $index }}.cantidad" min="1" 
+                                                    class="w-full text-center rounded-md border-gray-300 bg-gray-50 text-gray-900 p-1 font-bold focus:ring-indigo-500 focus:border-indigo-500 h-8 text-xs">
+                                            </div>
+                                        </div>
 
-                    <div class="text-right text-[11px] text-gray-500 font-medium">
-                        Subtotal: <span class="font-bold text-gray-900">${{ number_format(($item['precio'] * $item['cantidad']), 2) }}</span>
+                                        <div class="text-right text-[11px] text-gray-500 font-medium">
+                                            Subtotal: <span class="font-bold text-gray-900">${{ number_format(($item['precio'] * $item['cantidad']), 2) }}</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                        @error('carrito') <span class="text-xs text-red-600 mt-1 block font-bold">⚠️ {{ $message }}</span> @enderror
                     </div>
-                </div>
-            @endforeach
-        </div>
-    @endif
-    @error('carrito') <span class="text-xs text-red-600 mt-1 block font-bold">⚠️ {{ $message }}</span> @enderror
-</div>
 
                     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
@@ -201,6 +201,7 @@
                                     <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">Artículos Vendidos</th>
                                     <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">Tipo / Total</th>
                                     <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">Detalle Crédito</th>
+                                    <th class="px-4 py-3 text-center text-xs font-bold uppercase tracking-wider">Acciones</th> {{-- 👈 NUEVO --}}
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 text-xs">
@@ -255,10 +256,25 @@
                                                 <span class="text-gray-400 font-medium italic">N/A (Cancelado)</span>
                                             @endif
                                         </td>
+                                        {{-- 👈 NUEVAS ACCIONES: Carga interactiva y descarga de PDF --}}
+                                        <td class="px-4 py-3 whitespace-nowrap text-center space-x-1">
+                                            <button type="button" wire:click="verDetalleVenta({{ $venta->id }})" 
+                                                    class="inline-flex items-center bg-gray-100 border border-gray-300 text-gray-700 px-2 py-1 rounded font-bold hover:bg-gray-200 transition shadow-sm cursor-pointer text-[11px]">
+                                                👁️ Ver
+                                            </button>
+                                            <button type="button" wire:click="descargarPdf({{ $venta->id }})" 
+                                                    class="inline-flex items-center bg-red-50 border border-red-200 text-red-600 px-2 py-1 rounded font-bold hover:bg-red-100 transition shadow-sm cursor-pointer text-[11px]">
+                                                📄 PDF
+                                            </button>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="mt-4">
+                        {{ $ventas->links() }}
                     </div>
                 @endif
             </div>
@@ -266,6 +282,7 @@
         </div>
     </div>
 
+    {{-- MODAL 1: REGISTRO RÁPIDO DE CLIENTE --}}
     <flux:modal name="modal-cliente-rapido" class="md:w-[450px] space-y-6">
         <div class="flex items-center space-x-2 border-b pb-2">
             <span class="text-xl">👤</span>
@@ -325,5 +342,109 @@
                 </flux:button>
             </div>
         </form>
+    </flux:modal>
+
+    {{-- ➕ MODAL 2 NUEVO: DETALLE EXTENDIDO DE LA VENTA SELECCIONADA --}}
+    <flux:modal name="modal-detalle-venta" class="md:w-[600px] space-y-6">
+        @if($ventaSeleccionada)
+            <div class="flex items-center justify-between border-b pb-3">
+                <div class="flex items-center space-x-2">
+                    <span class="text-2xl">🧾</span>
+                    <div>
+                        <h3 class="text-lg font-black text-gray-900">Comprobante de Venta N° {{ $ventaSeleccionada->id }}</h3>
+                        <p class="text-xs text-gray-500">Fecha de emisión: {{ date('d/m/Y', strtotime($ventaSeleccionada->fecha_venta)) }}</p>
+                    </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-sm border
+                    {{ $ventaSeleccionada->tipo_pago === 'contado' ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-purple-100 text-purple-800 border-purple-200' }}">
+                    {{ $ventaSeleccionada->tipo_pago }}
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200 text-xs">
+                <div>
+                    <h4 class="font-black text-gray-400 uppercase tracking-widest text-[9px] mb-1">Datos del Cliente</h4>
+                    <p class="font-bold text-gray-900 text-sm">{{ $ventaSeleccionada->cliente->nombres }} {{ $ventaSeleccionada->cliente->apellidos }}</p>
+                    <p class="text-gray-600 font-medium mt-0.5">DUI: <span class="font-mono font-bold text-gray-800">{{ $ventaSeleccionada->cliente_dui }}</span></p>
+                    <p class="text-gray-600 font-medium">Tel: {{ $ventaSeleccionada->cliente->telefono ?? 'No registrado' }}</p>
+                </div>
+                <div>
+                    <h4 class="font-black text-gray-400 uppercase tracking-widest text-[9px] mb-1">Resumen del Crédito</h4>
+                    @if($ventaSeleccionada->tipo_pago === 'credito')
+                        <p class="text-gray-700 font-semibold">Prima Pagada: <span class="font-bold text-gray-900">${{ number_format($ventaSeleccionada->monto_prima, 2) }}</span></p>
+                        <p class="text-gray-700 font-semibold">Monto Neto Financiar: <span class="font-bold text-red-600">${{ number_format($ventaSeleccionada->monto_financiar, 2) }}</span></p>
+                        <p class="text-indigo-700 font-black mt-1 bg-indigo-100/60 border border-indigo-200 rounded px-2 py-0.5 w-fit text-[10px]">
+                            {{ $ventaSeleccionada->numero_cuotas }} cuotas de forma {{ $ventaSeleccionada->frecuencia_pago }}
+                        </p>
+                    @else
+                        <p class="text-emerald-700 font-bold italic py-2 flex items-center">✨ Venta cancelada de forma inmediata al contado.</p>
+                    @endif
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-black text-gray-700 uppercase tracking-wider text-[11px] mb-2 flex items-center space-x-1">
+                    <span>📦 Desglose de Artículos</span>
+                </h4>
+                <div class="border border-gray-200 rounded-lg overflow-hidden shadow-inner text-xs">
+                    <table class="w-full text-left bg-white divide-y divide-gray-100">
+                        <thead class="bg-gray-100 font-bold text-gray-600 text-[10px] uppercase">
+                            <tr>
+                                <th class="px-3 py-2">Descripción / Modelo</th>
+                                <th class="px-3 py-2 text-center">Cant.</th>
+                                <th class="px-3 py-2 text-right">P. Unit</th>
+                                <th class="px-3 py-2 text-right">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 text-gray-700 font-medium">
+                            @if($ventaSeleccionada->detalles && $ventaSeleccionada->detalles->count() > 0)
+                                @foreach($ventaSeleccionada->detalles as $det)
+                                    <tr>
+                                        <td class="px-3 py-2.5">
+                                            <span class="font-bold text-gray-900 block">{{ $det->producto->descripcion ?? 'Artículo Desconocido' }}</span>
+                                            <span class="text-gray-400 font-mono text-[10px]">{{ $det->producto->codigo_modelo ?? 'N/A' }}</span>
+                                        </td>
+                                        <td class="px-3 py-2.5 text-center font-bold text-gray-900">x{{ $det->cantidad }}</td>
+                                        <td class="px-3 py-2.5 text-right">${{ number_format($det->precio_unitario, 2) }}</td>
+                                        <td class="px-3 py-2.5 text-right font-bold text-gray-900">${{ number_format($det->subtotal, 2) }}</td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                @if($ventaSeleccionada->producto)
+                                    <tr>
+                                        <td class="px-3 py-2.5">
+                                            <span class="font-bold text-gray-900 block">{{ $ventaSeleccionada->producto->descripcion }}</span>
+                                            <span class="text-gray-400 font-mono text-[10px]">{{ $ventaSeleccionada->producto->codigo_modelo }}</span>
+                                        </td>
+                                        <td class="px-3 py-2.5 text-center font-bold text-gray-900">x1</td>
+                                        <td class="px-3 py-2.5 text-right">${{ number_format($ventaSeleccionada->monto_total, 2) }}</td>
+                                        <td class="px-3 py-2.5 text-right font-bold text-gray-900">${{ number_format($ventaSeleccionada->monto_total, 2) }}</td>
+                                    </tr>
+                                @endif
+                            @endif
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t">
+                <div class="text-right">
+                    <span class="text-[11px] font-bold text-gray-400 uppercase tracking-wider block">Total Facturado</span>
+                    <span class="text-2xl font-black text-gray-900">${{ number_format($ventaSeleccionada->monto_total, 2) }}</span>
+                </div>
+                <div class="flex space-x-2">
+                    <flux:button type="button" x-on:click="$flux.modal('modal-detalle-venta').close()" variant="ghost" class="text-xs">
+                        Cerrar Ventana
+                    </flux:button>
+                    <flux:button type="button" wire:click="descargarPdf({{ $ventaSeleccionada->id }})" variant="primary" class="bg-red-600 hover:bg-red-700 text-white font-bold text-xs cursor-pointer">
+                        📄 Descargar PDF
+                    </flux:button>
+                </div>
+            </div>
+        @else
+            <div class="text-center py-12 text-gray-400 font-medium text-xs">
+                ⏳ Cargando información detallada de la venta...
+            </div>
+        @endif
     </flux:modal>
 </div>

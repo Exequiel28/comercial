@@ -3,10 +3,13 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithPagination; // 👈 Importamos el trait de paginación
 use App\Models\Producto;
 
 class Productos extends Component
 {
+    use WithPagination; // 👈 Habilitamos el trait de paginación reactiva
+
     // Campos del formulario principal
     public $productoId = null; // Para saber si estamos editando
     public $codigo_modelo = '';
@@ -146,8 +149,8 @@ class Productos extends Component
     public function render()
     {
         return view('livewire.productos', [
-            // Listamos todos los productos (activos e inactivos) ordenados por su descripción
-            'productos' => Producto::withTrashed()->orderBy('descripcion')->get() 
+            // 👈 Modificado: Cambiado ->get() por ->paginate(10) para un rendimiento veloz del inventario
+            'productos' => Producto::withTrashed()->orderBy('descripcion')->paginate(10) 
         ])->layout('layouts.app');
     }
 }

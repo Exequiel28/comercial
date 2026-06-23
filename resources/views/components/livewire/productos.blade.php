@@ -55,7 +55,7 @@
                     <div class="pt-2">
                         <flux:button type="submit" 
                             variant="primary" class="w-full inline-flex justify-center items-center rounded-lg bg-blue-700 py-3 px-4 text-base font-black text-white shadow-lg hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200 transition-all transform active:scale-95 cursor-pointer">
-                            📦 INGRESAR A BODEGA
+                            📦 {{ $productoId ? '💾 ACTUALIZAR ARTÍCULO' : '📦 INGRESAR A BODEGA' }}
                         </flux:button>
                     </div>
                 </form>
@@ -83,7 +83,8 @@
                                     <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">Marca</th>
                                     <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">Precio</th>
                                     <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider">Existencias</th>
-                                    <th class="px-4 py-3 text-center text-xs font-bold uppercase tracking-wider">Acciones / Estado</th> </tr>
+                                    <th class="px-4 py-3 text-center text-xs font-bold uppercase tracking-wider">Acciones / Estado</th>
+                                </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200 text-sm">
                                 @foreach($productos as $producto)
@@ -127,6 +128,10 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-gray-100 px-2">
+                        {{ $productos->links() }}
                     </div>
                 @endif
             </div>

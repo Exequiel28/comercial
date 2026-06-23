@@ -126,6 +126,10 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <div class="mt-4 pt-4 border-t border-gray-100 px-2">
+                        {{ $clientes->links() }}
+                    </div>
                 @endif
             </div>
         </div>

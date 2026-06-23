@@ -6,15 +6,18 @@ use App\Livewire\Ventas;
 use App\Livewire\Productos;
 use App\Livewire\Abonos;
 
-Route::view('/', 'welcome')->name('home');
+// 🔄 Redirección automática de la raíz al Login
+// 🔄 Redirección automática de la raíz al Login con el nombre 'home'
+Route::redirect('/', '/login')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
-    Route::get('/clientes', Clientes::class)->middleware(['auth', 'verified'])->name('clientes');
-    Route::get('/ventas', Ventas::class)->middleware(['auth', 'verified'])->name('ventas');
-    Route::get('/productos', Productos::class)->middleware(['auth', 'verified'])->name('productos');
-    Route::get('/abonos', Abonos::class)->middleware(['auth', 'verified'])->name('abonos');
-
+    
+    // Rutas limpias (ya heredan el middleware del grupo)
+    Route::get('/clientes', Clientes::class)->name('clientes');
+    Route::get('/ventas', Ventas::class)->name('ventas');
+    Route::get('/productos', Productos::class)->name('productos');
+    Route::get('/abonos', Abonos::class)->name('abonos');
 });
 
 require __DIR__.'/settings.php';

@@ -3,13 +3,20 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithPagination; // 👈 Habilitado para la paginación del historial
 use App\Models\Cliente;
 use App\Models\Producto;
 use App\Models\Venta;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf; // 👈 NUEVO: Importación para generar PDF sin salir de Livewire
 
 class Ventas extends Component
 {
+    use WithPagination; // 👈 Habilitamos el trait de paginación reactiva
+
+    // Control de estado para visualización de detalles
+    public $ventaSeleccionada = null; // 👈 Almacena la venta a mostrar en el modal
+
     // Campos del formulario de venta
     public $cliente_dui = ''; // Enlazará el DUI definitivo seleccionado
     public $fecha_venta = '';
@@ -34,6 +41,7 @@ class Ventas extends Component
     public $nuevo_direccion = '';
     public $nuevo_telefono = '';
     public $nuevo_contacto_referencia = '';
+    
 
     public function mount()
     {
@@ -45,7 +53,7 @@ class Ventas extends Component
     {
         // Si cambia una cantidad dentro del carrito o la prima, recalculamos los montos financieros
         if (str_starts_with($propertyName, 'carrito') || $propertyName === 'monto_prima') {
-        $this->calcularTotales();
+            $this->calcularTotales();
         }
     }
 
@@ -100,8 +108,8 @@ class Ventas extends Component
         $totalSumado = 0;
 
         foreach ($this->carrito as $item) {
-            $cantidad = is_numeric($item['cantidad']) ? intval($item['cantidad']) : 0;
-            $totalSumado += floatval($item['precio']) * $cantidad;
+            $amount = is_numeric($item['cantidad']) ? intval($item['cantidad']) : 0;
+            $totalSumado += floatval($item['precio']) * $amount;
         }
 
         $this->monto_total = $totalSumado;
@@ -227,6 +235,39 @@ class Ventas extends Component
         session()->flash('message', '✨ Cliente registrado y seleccionado correctamente para la venta.');
     }
 
+    /**
+     * Carga la venta seleccionada para mostrarla en el modal de detalle
+     */
+    public function verDetalleVenta($ventaId)
+    {
+        $this->ventaSeleccionada = null;
+
+        $this->ventaSeleccionada = Venta::with(['cliente', 'detalles.producto', 'producto'])
+            ->findOrFail($ventaId);
+
+        // 🛠️ INTEGRADO: Ordenamos a Flux UI que despliegue el modal tras cargar los datos
+        $this->js('$flux.modal("modal-detalle-venta").show()');
+    }
+
+    /**
+     * ➕ Procesa y descarga en caliente el PDF usando DomPDF desde Livewire
+     */
+    public function descargarPdf($ventaId)
+    {
+        $venta = Venta::with(['cliente', 'detalles.producto', 'producto'])->findOrFail($ventaId);
+
+        // Renderizamos el HTML limpio diseñado en tu carpeta tradicional
+        $pdf = Pdf::loadView('pdf.comprobante_venta', compact('venta'));
+
+        // streamDownload procesa la salida binaria sin requerir redirección web externa
+        return response()->streamDownload(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            "comprobante_venta_{$ventaId}.pdf"
+        );
+    }
+
     public function render()
     {
         // 1. Filtrado reactivo de Clientes
@@ -247,7 +288,7 @@ class Ventas extends Component
                 ->where('stock', '>', 0)
                 ->where(function($query) {
                     $query->where('descripcion', 'like', '%' . $this->searchProducto . '%')
-                          ->orWhere('codigo_modelo', 'like', '%' . $this->searchProducto . '%') // Busca también por código si cuentas con él
+                          ->orWhere('codigo_modelo', 'like', '%' . $this->searchProducto . '%')
                           ->orWhere('marca', 'like', '%' . $this->searchProducto . '%');
                 })
                 ->orderBy('descripcion')
@@ -258,8 +299,9 @@ class Ventas extends Component
         return view('livewire.ventas', [
             'clientes' => $clientesFiltrados,
             'productosBusqueda' => $productosFiltrados,
-            // Cargamos el historial con Eager Loading optimizado hacia la tabla intermedia y el producto
-            'ventas' => Venta::with(['cliente', 'detalles.producto'])->orderBy('created_at', 'desc')->get()
+            'ventas' => Venta::with(['cliente', 'detalles.producto'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(5)
         ])->layout('layouts.app');
     }
 }

@@ -3,10 +3,13 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithPagination; // 👈 Agregado para habilitar la paginación
 use App\Models\Cliente;
 
 class Clientes extends Component
 {
+    use WithPagination; // 👈 Habilitamos el trait de paginación asíncrona
+
     // Control de estado de edición (Guardará el DUI original que estamos editando)
     public $clienteId = null; 
 
@@ -109,7 +112,8 @@ class Clientes extends Component
     public function render()
     {
         return view('livewire.clientes', [
-            'clientes' => Cliente::withTrashed()->orderBy('nombres')->get()
+            // 👈 Modificado: Cambiado ->get() por ->paginate(10) para no sobrecargar el sistema
+            'clientes' => Cliente::withTrashed()->orderBy('nombres')->paginate(10)
         ])->layout('layouts.app');
     }
 }
